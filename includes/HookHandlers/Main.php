@@ -138,21 +138,21 @@ class Main implements
 			if ( {$forceGetRequest} ) {
 				_paq.push(['setRequestMethod', 'GET']);
 			}
-			{$usernameTracking}
-			{$searchTracking}
-			_paq.push(['trackPageView']);
-			_paq.push(['enableLinkTracking']);
 			(function() {
 				var u = "{$serverUrl}";
 				_paq.push(['setTrackerUrl', u+'matomo.php']);
-				_paq.push(['setDocumentTitle', {$wikiId} + " - " + {$jsTitle}]);
 				_paq.push(['setSiteId', {$siteId}]);
+				_paq.push(['setDocumentTitle', {$wikiId} + " - " + {$jsTitle}]);
 				if ( {$enableCustomDimensionsUserType} ) {
 					_paq.push(['setCustomDimension', 1, "{$userType}"]);
 				}
 				if ( {$globalId} ) {
 					_paq.push(['addTracker', u + 'matomo.php', {$globalIdString}]);
 				}
+				{$usernameTracking}
+				{$searchTracking}
+				_paq.push(['trackPageView']);
+				_paq.push(['enableLinkTracking']);
 				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 				g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			})();
