@@ -54,17 +54,36 @@ class MatomoAnalyticsWiki {
 		);
 
 		$siteJson = json_decode( $siteReply, true );
+		if ( !is_array( $siteJson ) ) {
+			return [];
+		}
+
+		// Matomo API can return errors like:
+		// {"result":"error","message":"..."}
+		if ( isset( $siteJson['result'] ) && $siteJson['result'] === 'error' ) {
+			return [];
+		}
 
 		$arrayOut = [];
 		foreach ( $siteJson as $key => $val ) {
-			if ( $period === 'day' ) {
-				// Flat
-				$arrayOut[$key] = $val['nb_visits'] ?: '-';
+			if ( !is_array( $val ) ) {
 				continue;
 			}
 
-			$arrayOut[ $val['label'] ] = $val['nb_visits'] ?: '-';
+			if ( $period === 'day' ) {
+				// Flat
+				$arrayOut[$key] = $val['nb_visits'] ?? '-';
+				continue;
+			}
+
+			$label = $val['label'] ?? null;
+			if ( $label === null ) {
+				continue;
+			}
+
+			$arrayOut[(string)$label] = $val['nb_visits'] ?? '-';
 		}
+
 
 		// Calculate time to 1 AM next day in configured timezone
 		$now = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
