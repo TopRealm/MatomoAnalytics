@@ -17,6 +17,8 @@ class ConfigNames {
 
 	public const ForceGetRequest = 'MatomoAnalyticsForceGetRequest';
 
+	public const IgnoreBots = 'MatomoAnalyticsIgnoreBots';
+
 	public const GlobalID = 'MatomoAnalyticsGlobalID';
 
 	public const ServerURL = 'MatomoAnalyticsServerURL';
@@ -25,6 +27,9 @@ class ConfigNames {
 
 	public const TokenAuth = 'MatomoAnalyticsTokenAuth';
 
+	public const TrackUsernames = 'MatomoAnalyticsTrackUsernames';
+
 	public const UseDB = 'MatomoAnalyticsUseDB';
 
 }
+

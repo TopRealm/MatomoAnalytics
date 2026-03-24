@@ -54,6 +54,9 @@
 	"matomoanalytics-labels-visitpass-info": "Clarifying information for the 'Time Passed' section. Displayed under label.",
 	"matomoanalytics-labels-website": "{{identical|Websites}}",
 	"matomoanalytics-labels-website-info": "Clarifying information for the 'Website Referrals' section. Displayed under label.",
+	"matomoanalytics-comment-bot-disabled": "HTML comment shown when tracking is skipped because the user has bot rights and MatomoAnalyticsIgnoreBots is enabled.",
+	"matomoanalytics-comment-noanalytics-assigned": "HTML comment shown when tracking is skipped because user has the noanalytics right.",
 	"right-noanalytics": "{{doc-right|noanalytics}}",
 	"right-viewanalytics": "{{doc-right|viewanalytics}}"
 }
+
