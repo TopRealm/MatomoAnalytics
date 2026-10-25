@@ -57,6 +57,7 @@ class MatomoAnalyticsWiki {
 
 		$rows = json_decode( $siteReply, true ) ?: [];
 
+
 		// Calculate time to 1 AM next day in configured timezone
 		$now = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
 		$next1AM = ( clone $now )->modify( 'tomorrow 01:00' );

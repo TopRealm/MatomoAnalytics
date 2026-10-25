@@ -16,9 +16,53 @@ class Main implements
 	SkinAfterBottomScriptsHook
 {
 
+	/** @var string|null */
+	private ?string $searchTerm = null;
+
+	/** @var string|null */
+	private ?string $searchProfile = null;
+
+	/** @var int|null */
+	private ?int $searchCount = null;
+
 	public function __construct(
 		private readonly ?CookiePreferences $cookiePreferences
 	) {
+	}
+
+	/**
+	 * Hook to save some data in Special:Search.
+	 *
+	 * @param string $term Searched term.
+	 * @param mixed $titleMatches Results in the titles.
+	 * @param mixed $textMatches Results in the fulltext.
+	 * @return true
+	 */
+	public function onSpecialSearchResults( $term, $titleMatches, $textMatches ) {
+		$this->searchTerm = $term;
+		$this->searchCount = 0;
+
+		if ( is_object( $titleMatches ) && method_exists( $titleMatches, 'numRows' ) ) {
+			$this->searchCount += (int)$titleMatches->numRows();
+		}
+		if ( is_object( $textMatches ) && method_exists( $textMatches, 'numRows' ) ) {
+			$this->searchCount += (int)$textMatches->numRows();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Hook to save some data in Special:Search.
+	 *
+	 * @param mixed $search Special page.
+	 * @param string|null $profile Search profile.
+	 * @param mixed $engine Search engine.
+	 * @return true
+	 */
+	public function onSpecialSearchSetupEngine( $search, $profile, $engine ) {
+		$this->searchProfile = $profile !== null ? (string)$profile : null;
+		return true;
 	}
 
 	/**
@@ -42,10 +86,16 @@ class Main implements
 			}
 		}
 
-		if ( $skin->getAuthority()->isAllowed( 'noanalytics' ) ) {
-			$text .= '<!-- MatomoAnalytics: User right noanalytics is assigned. -->';
+				if ( $config->get( ConfigNames::IgnoreBots ) && $skin->getAuthority()->isAllowed( 'bot' ) ) {
+			$text .= '<!-- ' . wfMessage( 'matomoanalytics-comment-bot-disabled' )->plain() . ' -->';
 			return;
 		}
+
+		if ( $skin->getAuthority()->isAllowed( 'noanalytics' ) ) {
+			$text .= '<!-- ' . wfMessage( 'matomoanalytics-comment-noanalytics-assigned' )->plain() . ' -->';
+			return;
+		}
+
 
 		$siteId = (string)MatomoAnalytics::getSiteID( WikiMap::getCurrentWikiId(), disableCache: false );
 
@@ -65,6 +115,20 @@ class Main implements
 		$forceGetRequest = (int)$config->get( ConfigNames::ForceGetRequest );
 		$enableCustomDimensionsUserType = (int)$config->get( ConfigNames::EnableCustomDimensionsUserType );
 
+		$usernameTracking = '';
+		if ( $config->get( ConfigNames::TrackUsernames ) && $skin->getUser()->isRegistered() ) {
+			$jsUsername = Html::encodeJsVar( $skin->getUser()->getName() );
+			$usernameTracking = "_paq.push(['setUserId', {$jsUsername}]);";
+		}
+
+		$searchTracking = '';
+		if ( $this->searchTerm !== null ) {
+			$searchTerm = Html::encodeJsVar( $this->searchTerm );
+			$searchProfile = $this->searchProfile !== null ? Html::encodeJsVar( $this->searchProfile ) : 'false';
+			$searchCount = $this->searchCount !== null ? (string)$this->searchCount : 'false';
+			$searchTracking = "_paq.push(['trackSiteSearch', {$searchTerm}, {$searchProfile}, {$searchCount}]);";
+		}
+
 		$text .= <<<SCRIPT
 			<script>
 			var _paq = window._paq = window._paq || [];
@@ -74,19 +138,21 @@ class Main implements
 			if ( {$forceGetRequest} ) {
 				_paq.push(['setRequestMethod', 'GET']);
 			}
-			_paq.push(['trackPageView']);
-			_paq.push(['enableLinkTracking']);
 			(function() {
 				var u = "{$serverUrl}";
 				_paq.push(['setTrackerUrl', u+'matomo.php']);
-				_paq.push(['setDocumentTitle', {$wikiId} + " - " + {$jsTitle}]);
 				_paq.push(['setSiteId', {$siteId}]);
+				_paq.push(['setDocumentTitle', {$wikiId} + " - " + {$jsTitle}]);
 				if ( {$enableCustomDimensionsUserType} ) {
 					_paq.push(['setCustomDimension', 1, "{$userType}"]);
 				}
 				if ( {$globalId} ) {
 					_paq.push(['addTracker', u + 'matomo.php', {$globalIdString}]);
 				}
+				{$usernameTracking}
+				{$searchTracking}
+				_paq.push(['trackPageView']);
+				_paq.push(['enableLinkTracking']);
 				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 				g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			})();
@@ -94,6 +160,7 @@ class Main implements
 			<noscript><p><img src="{$serverUrl}matomo.php?idsite={$siteId}&amp;rec=1&amp;action_name={$urlTitle}" style="border: 0;" alt="" /></p></noscript>
 		SCRIPT;
 	}
+
 
 	/**
 	 * Display total pageviews in the last 30 days and show a graph with details when clicked.

@@ -54,5 +54,6 @@
 	"matomoanalytics-labels-website-info": "Referrals from other websites are shown here. These are a good way to boost search engine visibility.",
 	"matomoanalytics-rest-permission-denied": "You do not have permission to view analytics data.",
 	"right-noanalytics": "Not be tracked via Matomo",
+
 	"right-viewanalytics": "View wiki analytics and statistics collected by Matomo"
 }

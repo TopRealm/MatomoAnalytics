@@ -58,6 +58,12 @@
 		},
 		"SkinAfterBottomScripts": {
 			"handler": "Main"
+		},
+		"SpecialSearchResults": {
+			"handler": "Main"
+		},
+		"SpecialSearchSetupEngine": {
+			"handler": "Main"
 		}
 	},
 	"HookHandlers": {
@@ -113,6 +119,10 @@
 			"description": "Boolean. Whether or not you want to foce GET requests which also disables beacon. Reverts back to Matomo v3 tracking behavior.",
 			"value": false
 		},
+		"MatomoAnalyticsIgnoreBots": {
+			"description": "Boolean. Whether or not to disable tracking for users with bot rights.",
+			"value": true
+		},
 		"MatomoAnalyticsGlobalID": {
 			"description": "Integer. If tracking more than one site, this is an ID to attach to all wikis for central aggregate statistics.",
 			"value": 0
@@ -129,6 +139,10 @@
 			"description": "String. The API token for authentication when making requests for data.",
 			"value": ""
 		},
+		"MatomoAnalyticsTrackUsernames": {
+			"description": "Boolean. Whether or not to track usernames as Matomo User ID for registered users.",
+			"value": false
+		},
 		"MatomoAnalyticsUseDB": {
 			"description": "Boolean. Whether or not to use the database for tracking site IDs.",
 			"value": false
@@ -142,3 +156,4 @@
 	],
 	"manifest_version": 2
 }
+
