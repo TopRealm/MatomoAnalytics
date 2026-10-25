@@ -51,9 +51,8 @@
 	"matomoanalytics-labels-visitpass": "Time passed in between revisits",
 	"matomoanalytics-labels-visitpass-info": "How much time passes before visitors revisit this wiki is displayed here.",
 	"matomoanalytics-labels-website": "Website referrals",
-		"matomoanalytics-labels-website-info": "Referrals from other websites are shown here. These are a good way to boost search engine visibility.",
-	"matomoanalytics-comment-bot-disabled": "MatomoAnalytics: Tracking disabled for bots.",
-	"matomoanalytics-comment-noanalytics-assigned": "MatomoAnalytics: User right noanalytics is assigned.",
+	"matomoanalytics-labels-website-info": "Referrals from other websites are shown here. These are a good way to boost search engine visibility.",
+	"matomoanalytics-rest-permission-denied": "You do not have permission to view analytics data.",
 	"right-noanalytics": "Not be tracked via Matomo",
 
 	"right-viewanalytics": "View wiki analytics and statistics collected by Matomo"
